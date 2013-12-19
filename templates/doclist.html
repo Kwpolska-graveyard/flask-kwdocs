@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>Documents</h1>
+{% if docs %}
+<style>
+form { display: inline-block; }
+td, th { vertical-align: middle !important; }
+p { margin: 0; }
+</style>
+<div class="well">Bulk actions:
+    <form action="/docs/__bulk__/act/" method="POST">
+        <button class="btn btn-success" title="Reload all" type="submit"
+            name="act" value="reload">
+            <i class="icon-refresh"></i> Reload data from all files
+        </button>
+    </form>
+</div>
+<table class="table table-hover table-bordered">
+    <tbody>
+    <tr>
+        <th>#</th>
+        <th>Status</th>
+        <th>Name</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Date</th>
+        <th>Actions</th>
+    </tr>
+    {% for d in docs %}
+    <tr>
+        <td style="vertical-align: middle; width: 3em;">{{ loop.index }}</td>
+        <td>
+            {% if d.status == 1 %}
+            <form action="/docs/{{ d.slug }}/act/" method="POST">
+            <button class="btn btn-warning" title="Add" type="submit" name="act" value="dbadd">
+            <i class="icon-wrench"></i> not in DB
+            </button>
+            </form>
+            {% elif d.status == 2 %}
+            <form action="/docs/{{ d.slug }}/act/" method="POST">
+            <button class="btn btn-danger" title="Delete from DB" type="submit" name="act" value="dbdel">
+                <i class="icon-wrench"></i> not in FS
+            </button>
+            </form>
+            {% elif d.status == 3 %}
+            <button disabled="disabled" class="btn btn-success" title="OK">
+            <i class="icon-ok"></i> all is well
+        </button>
+            {% endif %}</td>
+        <td><a href="{{ d.slug }}/">{{ d.slug }}</a></td>
+        <td>{{ d.title }}</td>
+        <td>{{ d.author }}</td>
+        <td>{{ d.date }}</td>
+        <td style="vertical-align: middle; width: 20em;">
+            <form class="btn-group" action="/docs/{{ d.slug }}/act/" method="POST">
+                <button title="Details" type="submit" name="act"
+                    value="doc" class="btn btn-default"><i
+                    class="icon-ellipsis-vertical"></i>
+                    Details</button>
+                <button title="View" type="submit" name="act" value="view"
+                    class="btn btn-primary"><i class="icon-eye-open"></i>
+                    View</button>
+                <button title="Reload data from file" type="submit"
+                    {% if d.status == 1 %} disabled="disabled" {% endif %}
+                    name="act" value="reload" class="btn btn-success"><i
+                        class="icon-refresh"></i></button>
+                <button title="Render" type="submit" name="act"
+                    value="render" class="btn btn-info"><i
+                        class="icon-cog"></i></button>
+                <button title="Delete" type="submit" name="act"
+                    value="delete" class="btn btn-danger"><i
+                        class="icon-trash"></i></button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</tr>
+</tbody>
+</table>
+{% else %}
+<p class="text-danger">No documents found.</p>
+{% endif %}
+{% endblock body %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>Delete <em>{{ slug }}</em></h1>
+
+<p>
+This will:
+</p>
+
+<ul>
+    <li>remove all auxillary files</li>
+    <li>remove the PDF</li>
+    <li>remove all metadata in the database</li>
+    <li>move the <code>.tex</code> file to an archive</li>
+</ul>
+
+<p class="lead">Are you sure you want to perform these actions?
+
+<form action="" method="POST" style="text-align: center;">
+    <button type="submit" name="del" value="1" style="width: 5em;" class="btn btn-lg
+        btn-danger">Yes</button>
+    <button type="submit" name="del" value="0" style="width: 5em;" class="btn btn-lg
+        btn-default">No</button>
+</form></p>
+{% endblock body %}

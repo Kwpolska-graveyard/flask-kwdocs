@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>Bulk Reload</h1>
+{% if brstatus %}
+<style>
+form { display: inline-block; }
+td, th { vertical-align: middle !important; }
+p { margin: 0; }
+</style>
+<table class="table table-hover table-bordered">
+    <tbody>
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Status</th>
+    </tr>
+    {% for d, s in brstatus.items() %}
+    <tr>
+        <td style="vertical-align: middle; width: 3em;">{{ loop.index }}</td>
+        <td><a href="{{ d }}/">{{ d }}</a></td>
+        <td>
+            {% if s == 0 %}
+                Unknown error.
+            {% elif s == 1 %}
+                <p class="text-danger">Document does not exist in the FS</p>
+            {% elif s == 2 %}
+                <p class="text-success">OK (newly-created)</p>
+            {% elif s == 3 %}
+                <p class="text-success">OK</p>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</tr>
+</tbody>
+</table>
+{% else %}
+<p class="text-danger">No documents found.</p>
+{% endif %}
+{% endblock body %}

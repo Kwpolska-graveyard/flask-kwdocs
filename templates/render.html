@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block body %}
+<h1><em>{{ slug }}</em> rendering output</h1>
+
+{% if flag %}
+    <div class="alert alert-danger">Rendering failed!</div>
+{% else %}
+<div class="alert alert-success">Rendering succeeded! <a
+        class="alert-link" href="{{ url_for('docs_view', slug=slug) }}">View the
+        resulting PDF.</a></div>
+{% endif %}
+
+{% for x in xelatex %}
+    <h2>Run {{ loop.index }}</h2>
+    <pre>{{ x }}</pre>
+{% endfor %}
+
+{% endblock body %}
