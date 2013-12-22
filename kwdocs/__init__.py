@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""KwDocs — A LaTeX document management system for Flask."""
 
 from kwlh import app, db
 from flask import (Blueprint, request, flash, render_template,
@@ -143,7 +144,7 @@ def bulk_reload():
 def view(slug):
     try:
         with open(os.path.join(app.config['DOCPATH'], slug, slug + '.pdf'),
-                    'rb') as fh:
+                  'rb') as fh:
             resp = make_response(fh.read(), 200)
         resp.headers['Content-Type'] = 'application/pdf'
         return resp
