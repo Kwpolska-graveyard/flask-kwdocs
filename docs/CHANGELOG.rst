@@ -1,7 +1,7 @@
 =====================
 Appendix C. Changelog
 =====================
-:Info: This is the changelog for TEMPLATE.
+:Info: This is the changelog for Flask-KwDocs.
 :Author: Chris “Kwpolska” Warrick <kwpolska@kwpolska.tk>
 :Copyright: © 2013, Kwpolska.
 :License: BSD (see /LICENSE or :doc:`Appendix B <LICENSE>`.)

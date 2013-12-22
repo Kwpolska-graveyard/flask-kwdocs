@@ -1,10 +1,10 @@
-TEMPLATE
-========
+Flask-KwDocs
+============
 
 .. toctree::
    :maxdepth: 2
 
-   README for TEMPLATE <README>
+   README for Flask-KwDocs <README>
    CONTRIBUTING
    LICENSE
    CHANGELOG
