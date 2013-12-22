@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Flask-KwDocs'
-copyright = u'2013, Kwpolska'
+copyright = u'2013, Chris “Kwpolska” Warrick'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -184,7 +184,7 @@ htmlhelp_basename = 'Flask-KwDocsdoc'
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'Flask-KwDocs.tex', u'Flask-KwDocs Documentation',
-   u'Kwpolska', 'manual'),
+   u'Chris “Kwpolska” Warrick', 'manual'),
 ]
 
 latex_elements = {'papersize': 'a4paper', 'fontpkg': '\\usepackage{tgheros}',
@@ -220,7 +220,7 @@ latex_elements = {'papersize': 'a4paper', 'fontpkg': '\\usepackage{tgheros}',
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'flask-kwdocs', u'Flask-KwDocs Documentation',
-     [u'Kwpolska'], 1)
+     [u'Chris “Kwpolska” Warrick'], 1)
 ]
 
 
