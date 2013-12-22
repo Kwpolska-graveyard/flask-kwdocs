@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""KwDocs — A LaTeX document management system for Flask."""
+"""KwDocs -- A LaTeX document management system for Flask."""
 
 from kwlh import app, db
 from flask import (Blueprint, request, flash, render_template,
@@ -15,6 +15,9 @@ KwDocs = Blueprint('KwDocs', __name__, template_folder='templates')
 
 
 class Document(db.Model):
+
+    """A model for documents."""
+
     id = db.Column(db.Integer, primary_key=True)
     slug = db.Column(db.String(512), unique=True)
     title = db.Column(db.String(512))
@@ -22,16 +25,19 @@ class Document(db.Model):
     date = db.Column(db.String(512))
 
     def __init__(self, slug, title, author, date):
+        """Initialize the Document object."""
         self.slug = slug
         self.title = title
         self.author = author
         self.date = date
 
     def __repr__(self):
+        """Provide a reproduction."""
         return '<Document {0}>'.format(self.slug)
 
 
 def _fetch_from_file(slug):
+    """Fetch metadata from file in a hacky way."""
     data = {'title': '', 'author': '', 'date': ''}
     with open(os.path.join(app.config['DOCPATH'], slug, slug + '.tex')) as fh:
         for line in fh:
@@ -46,6 +52,7 @@ def _fetch_from_file(slug):
 @KwDocs.route("/")
 @login_required
 def doclist():
+    """List all the documents."""
     docs = Document.query.all()
     docsd = {d.slug: d for d in docs}
     fs = os.listdir(app.config['DOCPATH'])
@@ -74,14 +81,15 @@ def doclist():
 @KwDocs.route("/<slug>/")
 @login_required
 def doc(slug):
-    docdata = Document.query.filter_by(slug=slug).first()
-    doc = docdata.__dict__
+    """Show one document."""
+    doc = Document.query.filter_by(slug=slug).first()
     return render_template('doc.html', doc=doc)
 
 
 @KwDocs.route("/<slug>/reload/")
 @login_required
 def reload(slug):
+    """Reload document metadata."""
     try:
         d = _fetch_from_file(slug)
     except:
@@ -104,6 +112,7 @@ def reload(slug):
 @KwDocs.route("/__bulk__/reload/")
 @login_required
 def bulk_reload():
+    """Reload all the metadata."""
     status = {}
     newdocs = {}
     dbd = Document.query.all()
@@ -142,6 +151,7 @@ def bulk_reload():
 @KwDocs.route("/<slug>/view/")
 @login_required
 def view(slug):
+    """View a PDF."""
     try:
         with open(os.path.join(app.config['DOCPATH'], slug, slug + '.pdf'),
                   'rb') as fh:
@@ -156,6 +166,7 @@ def view(slug):
 @KwDocs.route("/<slug>/render/")
 @login_required
 def render(slug):
+    """Render a document."""
     origdir = os.getcwd()
     try:
         os.chdir(os.path.join(app.config['DOCPATH'], slug))
@@ -184,6 +195,7 @@ def render(slug):
 @KwDocs.route("/<slug>/delete/", methods=['GET', 'POST'])
 @login_required
 def delete(slug):
+    """Delete a document."""
     if request.method == 'POST':
         if request.form['del'] == '1':
             doc = Document.query.filter_by(slug=slug).first()
@@ -217,6 +229,7 @@ def delete(slug):
 @KwDocs.route("/<slug>/act/", methods=['POST'])
 @login_required
 def act(slug):
+    """Redirect actions."""
     if slug == '__bulk__':
         act = '.bulk_' + request.form['act']
     else:
