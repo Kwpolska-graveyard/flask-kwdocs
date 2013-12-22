@@ -1,6 +1,6 @@
-====================================================
-Flask-KwDocs.  Easy lightweight document management.
-====================================================
+============================================================
+Flask-KwDocs.  A LaTeX document management system for Flask.
+============================================================
 :Info: This is the README file for Flask-KwDocs.
 :Author: Chris “Kwpolska” Warrick <kwpolska@kwpolska.tk>
 :Date: 2013-12-19
