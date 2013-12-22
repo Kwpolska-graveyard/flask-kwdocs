@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# TEMPLATE documentation build configuration file, created by
+# Flask-KwDocs documentation build configuration file, created by
 # sphinx-quickstart on Fri Dec 14 21:02:58 2012.
 #
 # This file is execfile()d with the current directory set to its containing dir.
@@ -40,7 +40,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'TEMPLATE'
+project = u'Flask-KwDocs'
 copyright = u'2013, Kwpolska'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -164,7 +164,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'TEMPLATEdoc'
+htmlhelp_basename = 'Flask-KwDocsdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -178,7 +178,7 @@ htmlhelp_basename = 'TEMPLATEdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'TEMPLATE.tex', u'TEMPLATE Documentation',
+  ('index', 'Flask-KwDocs.tex', u'Flask-KwDocs Documentation',
    u'Kwpolska', 'manual'),
 ]
 
@@ -214,7 +214,7 @@ latex_elements = {'papersize': 'a4paper', 'fontpkg': '\\usepackage{tgheros}',
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'tEmplate', u'TEMPLATE Documentation',
+    ('index', 'flask-kwdocs', u'Flask-KwDocs Documentation',
      [u'Kwpolska'], 1)
 ]
 
