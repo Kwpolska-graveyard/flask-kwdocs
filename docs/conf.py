@@ -97,7 +97,8 @@ pygments_style = 'sphinx'
 sys.path.append(os.path.abspath('_themes'))
 html_theme_path = ['_themes']
 html_theme = 'flask'
-html_theme_options = {'index_logo': False}
+html_theme_options = {'github_fork': 'Kwpolska/flask-kwdocs',
+                      'index_logo': False}
 pygments_style = 'flask_theme_support.FlaskyStyle'
 
 # Theme options are theme-specific and customize the look and feel of a theme
