@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 # Flask-KwDocs v0.1.0
 # A LaTeX document management system for Flask.
-# Copyright © 2013, Chris “Kwpolska” Warrick.
+# Copyright © 2013-2014, Chris “Kwpolska” Warrick.
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@
 
     A LaTeX document management system for Flask.
 
-    :Copyright: © 2013, Chris “Kwpolska” Warrick.
+    :Copyright: © 2013-2014, Chris “Kwpolska” Warrick.
     :License: BSD (see /LICENSE).
 """
 
