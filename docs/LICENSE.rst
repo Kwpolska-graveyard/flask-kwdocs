@@ -2,13 +2,13 @@
 Appendix B. License for Flask-KwDocs
 ====================================
 :Info: This is the license for Flask-KwDocs.
-:Author: Chris “Kwpolska” Warrick <kwpolska@kwpolska.tk>
-:Date: 2014-01-01
+:Author: Chris Warrick <chris@chriswarrick.com>
+:Date: 2015-02-22
 :Version: 0.1.0
 
 .. index:: LICENSE
 
-Copyright © 2013-2014, Chris “Kwpolska” Warrick.
+Copyright © 2013–2015, Chris Warrick.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
