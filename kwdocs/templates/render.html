@@ -1,18 +1,51 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{# This is based on code from Coil CMS, using components © 2015, Chris Warrick. #}
 {% block body %}
-<h1><em>{{ slug }}</em> rendering output</h1>
+<div class="page-header">
+<h1 class="build-status-caption"><i class="build-status-icon fa fa-fw
+fa-cog"></i> Rendering <i>{{ slug }}</i>
+<span id="built-pdf"></span>
+</h1>
+</div>
 
-{% if flag %}
-    <div class="alert alert-danger">Rendering failed!</div>
-{% else %}
-<div class="alert alert-success">Rendering succeeded! <a
-        class="alert-link" href="{{ url_for('docs_view', slug=slug) }}">View the
-        resulting PDF.</a></div>
-{% endif %}
+<h2>Run 1</h2>
+<pre><code id="output1">Waiting...</code></pre>
 
-{% for x in xelatex %}
-    <h2>Run {{ loop.index }}</h2>
-    <pre>{{ x }}</pre>
-{% endfor %}
+<h2>Run 2</h2>
+<pre><code id="output2">Waiting...</code></pre>
 
-{% endblock body %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    fs = $('.build-status-icon');
+    fsc = $('.build-status-caption');
+    pdf = $('#built-pdf');
+    out1 = $('#output1');
+    out2 = $('#output2');
+    var intID = setInterval(function() {
+        $.ajax({
+            "url": "{{ url_for('.api_render', slug=slug) }}",
+            "dataType": "json",
+        }).done(function(data) {
+            out1.html(data['1'].out);
+            out2.html(data['2'].out);
+            f2 = (data['2'].status === true);
+            if (f2) {
+                fs.removeClass('fa-cog');
+                fs.addClass('fa-check');
+                fsc.addClass('text-success');
+                pdf.html('<a href="{{ url_for(".view", slug=slug) }}" class="btn btn-primary">View PDF</a>');
+                clearInterval(intID);
+            }
+            if (data.build.status === false || data.orphans.status === false) {
+                fs.removeClass('fa-cog');
+                fs.addClass('fa-times');
+                fsc.addClass('text-danger');
+            }
+        });
+    }, 1000);
+});
+</script>
+{% endblock %}

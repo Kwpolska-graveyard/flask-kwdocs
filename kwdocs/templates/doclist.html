@@ -11,7 +11,7 @@ p { margin: 0; }
     <form action="/docs/__bulk__/act/" method="POST">
         <button class="btn btn-success" title="Reload all" type="submit"
             name="act" value="reload">
-            <i class="icon-refresh"></i> Reload data from all files
+            <i class="fa fa-refresh"></i> Reload data from all files
         </button>
     </form>
 </div>
@@ -33,18 +33,18 @@ p { margin: 0; }
             {% if d.status == 1 %}
             <form action="/docs/{{ d.slug }}/act/" method="POST">
             <button class="btn btn-warning" title="Add" type="submit" name="act" value="dbadd">
-            <i class="icon-wrench"></i> not in DB
+            <i class="fa fa-wrench"></i> not in DB
             </button>
             </form>
             {% elif d.status == 2 %}
             <form action="/docs/{{ d.slug }}/act/" method="POST">
             <button class="btn btn-danger" title="Delete from DB" type="submit" name="act" value="dbdel">
-                <i class="icon-wrench"></i> not in FS
+                <i class="fa fa-wrench"></i> not in FS
             </button>
             </form>
             {% elif d.status == 3 %}
             <button disabled="disabled" class="btn btn-success" title="OK">
-            <i class="icon-ok"></i> all is well
+            <i class="fa fa-ok"></i> all is well
         </button>
             {% endif %}</td>
         <td><a href="{{ d.slug }}/">{{ d.slug }}</a></td>
@@ -55,21 +55,21 @@ p { margin: 0; }
             <form class="btn-group" action="/docs/{{ d.slug }}/act/" method="POST">
                 <button title="Details" type="submit" name="act"
                     value="doc" class="btn btn-default"><i
-                    class="icon-ellipsis-vertical"></i>
+                    class="fa fa-ellipsis-v"></i>
                     Details</button>
                 <button title="View" type="submit" name="act" value="view"
-                    class="btn btn-primary"><i class="icon-eye-open"></i>
+                    class="btn btn-primary"><i class="fa fa-file-pdf-o"></i>
                     View</button>
                 <button title="Reload data from file" type="submit"
                     {% if d.status == 1 %} disabled="disabled" {% endif %}
                     name="act" value="reload" class="btn btn-success"><i
-                        class="icon-refresh"></i></button>
+                        class="fa fa-refresh"></i></button>
                 <button title="Render" type="submit" name="act"
                     value="render" class="btn btn-info"><i
-                        class="icon-cog"></i></button>
+                        class="fa fa-cog"></i></button>
                 <button title="Delete" type="submit" name="act"
                     value="delete" class="btn btn-danger"><i
-                        class="icon-trash"></i></button>
+                        class="fa fa-trash"></i></button>
             </form>
         </td>
     </tr>

@@ -4,8 +4,8 @@ Appendix A. Contribution rules
 :Author: Chris Warrick <chris@chriswarrick.com>
 :Copyright: © 2013–2015, Chris Warrick.
 :License: BSD (see /LICENSE or :doc:`Appendix B <LICENSE>`.)
-:Date: 2015-02-22
-:Version: 0.1.0
+:Date: 2015-03-14
+:Version: 0.2.0
 
 .. index:: contributing
 

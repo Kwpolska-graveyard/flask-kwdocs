@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
-# Flask-KwDocs v0.1.0
+# Flask-KwDocs v0.2.0
 # A LaTeX document management system for Flask.
 # Copyright © 2013–2015, Chris Warrick.
 # All rights reserved.
@@ -43,6 +43,8 @@
     :License: BSD (see /LICENSE).
 """
 
+from __future__ import unicode_literals
+
 __title__ = 'Flask-KwDocs'
 __version__ = '0.1.0'
 __author__ = 'Chris Warrick'
@@ -54,11 +56,18 @@ from flask import (Blueprint, request, flash, render_template,
                    redirect, url_for, make_response)
 from flask.ext.login import login_required
 import os
+import io
 import shutil
 import re
-import subprocess
+import redis
+import rq
+import json
+from .tasks import render_task
 
 KwDocs = Blueprint('KwDocs', __name__, template_folder='templates')
+app.config['REDIS_URL'] = 'redis://localhost:6379/0'
+redisdb = redis.StrictRedis.from_url(app.config['REDIS_URL'])
+q = rq.Queue(name='kwdocs', connection=redisdb)
 
 
 class Document(db.Model):
@@ -86,9 +95,9 @@ class Document(db.Model):
 def _fetch_from_file(slug):
     """Fetch metadata from file in a hacky way."""
     data = {'title': '', 'author': '', 'date': ''}
-    with open(os.path.join(app.config['DOCPATH'], slug, slug + '.tex')) as fh:
+    with io.open(os.path.join(app.config['DOCPATH'], slug, slug + '.tex'), encoding='utf-8') as fh:
         for line in fh:
-            m = re.match(r'\\([a-zA-Z]*){(.*)}', line)
+            m = re.match(r'\\([a-zA-Z]*){(.*)}', line, flags=re.UNICODE)
             if (m and m.groups()[0] in ('title', 'author', 'date') and
                     m.groups()[1] != ''):
                 data.update({m.groups()[0]: m.groups()[1]})
@@ -122,7 +131,7 @@ def doclist():
             _.status = 0b01
             docs.append(_)
 
-    return render_template('doclist.html', docs=docs)
+    return render_template('doclist.html', docs=docs, title='Documents', permalink=url_for('.doclist'))
 
 
 @KwDocs.route("/<slug>/")
@@ -130,7 +139,7 @@ def doclist():
 def doc(slug):
     """Show one document."""
     doc = Document.query.filter_by(slug=slug).first()
-    return render_template('doc.html', doc=doc)
+    return render_template('doc.html', doc=doc, title='Document {0}'.format(doc.title), permalink=url_for('.doc'))
 
 
 @KwDocs.route("/<slug>/reload/")
@@ -185,14 +194,18 @@ def bulk_reload():
             dbdocs[slug].date = data['date']
             status[slug] = 0b11
         else:
-            newdocs[slug] = Document(slug, data['title'], data['author'],
+            newdocs[slug] = Document(slug,
+                                     data['title'],
+                                     data['author'],
                                      data['date'])
             status[slug] = 0b10
 
     for d in dbdocs.values() + newdocs.values():
         db.session.add(d)
 
-    return render_template('bulk_reload.html', brstatus=status)
+    db.session.commit()
+    flash('Documents reloaded successfully.', 'success')
+    return redirect(url_for('.doclist'))
 
 
 @KwDocs.route("/<slug>/view/")
@@ -209,34 +222,53 @@ def view(slug):
         flash('The PDF does not exist.', 'error')
         return redirect(url_for('.doc', slug=slug))
 
+@KwDocs.route('/<slug>/render.json')
+@login_required
+def api_render(slug):
+    """Rebuild the site (internally)."""
+    r1_job = q.fetch_job('{0}.r1'.format(slug))
+    r2_job = q.fetch_job('{0}.r2'.format(slug))
+
+    if not r1_job and not r2_job:
+        r1_job = q.enqueue_call(
+            func=render_task, args=(app.config['REDIS_URL'],
+                                    app.config['DOCPATH'], slug),
+            job_id='{0}.r1'.format(slug))
+        r2_job = q.enqueue_call(
+            func=render_task, args=(app.config['REDIS_URL'],
+                                    app.config['DOCPATH'], slug),
+            job_id='{0}.r2'.format(slug), depends_on=r1_job)
+
+    d = json.dumps({'1': r1_job.meta, '2': r2_job.meta})
+
+    if ('status' in r1_job.meta and
+            r1_job.meta['status'] is not None
+            and 'status' in r2_job.meta and
+            r2_job.meta['status'] is not None):
+        rq.cancel_job('build', redisdb)
+        rq.cancel_job('orphans', redisdb)
+
+    return d
+
 
 @KwDocs.route("/<slug>/render/")
 @login_required
 def render(slug):
     """Render a document."""
-    origdir = os.getcwd()
-    try:
-        os.chdir(os.path.join(app.config['DOCPATH'], slug))
-    except:
-        flash('This document does not exist in the FS.', 'error')
-        return redirect(url_for('.doc', slug=slug))
-    flag = False
-    xelatex = []
-    mkout = lambda: subprocess.check_output(
-        ('xelatex', '-halt-on-error', slug), stderr=subprocess.STDOUT)
+    r1_job = q.fetch_job('{0}.r1'.format(slug))
+    r2_job = q.fetch_job('{0}.r2'.format(slug))
 
-    for i in range(0, 2):
-        try:
-            xelatex.append(mkout().decode())
-        except subprocess.CalledProcessError as e:
-            xelatex.append(e.output.decode())
-            flag = True
-            break
+    if not r1_job and not r2_job:
+        r1_job = q.enqueue_call(
+            func=render_task, args=(app.config['REDIS_URL'],
+                                    app.config['DOCPATH'], slug),
+            job_id='{0}.r1'.format(slug))
+        r2_job = q.enqueue_call(
+            func=render_task, args=(app.config['REDIS_URL'],
+                                    app.config['DOCPATH'], slug),
+            job_id='{0}.r2'.format(slug), depends_on=r1_job)
 
-    os.chdir(origdir)
-
-    return render_template('render.html', slug=slug, xelatex=xelatex,
-                           flag=flag)
+    return render_template('render.html', slug=slug, title='Rendering {0}'.format(slug), permalink=url_for('.render'))
 
 
 @KwDocs.route("/<slug>/delete/", methods=['GET', 'POST'])
@@ -270,7 +302,7 @@ def delete(slug):
         else:
             return redirect(url_for('.doc', slug=slug), 302)
     else:
-        return render_template('delete.html', slug=slug)
+        return render_template('delete.html', slug=slug, title='Deleting {0}'.format(slug), permalink=url_for('.delete'))
 
 
 @KwDocs.route("/<slug>/act/", methods=['POST'])

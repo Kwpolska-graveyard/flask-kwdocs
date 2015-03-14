@@ -18,17 +18,17 @@
 
 <form class="btn-group btn-group-lg" action="/docs/{{ doc.slug }}/act/" method="POST">
     <button title="View" type="submit" name="act" value="view"
-        class="btn btn-primary"><i class="icon-eye-open"></i>
+        class="btn btn-primary"><i class="fa fa-file-pdf-o"></i>
         View</button>
     <button title="Reload data from file" type="submit"
         name="act" value="reload" class="btn btn-success"><i
-            class="icon-refresh"></i> Reload data from file</button>
+            class="fa fa-refresh"></i> Reload data from file</button>
     <button title="Render" type="submit" name="act"
         value="render" class="btn btn-info"><i
-            class="icon-cog"></i> Render</button>
+            class="fa fa-cog"></i> Render</button>
     <button title="Delete" type="submit" name="act"
         value="delete" class="btn btn-danger"><i
-            class="icon-trash"></i> Delete</button>
+            class="fa fa-trash"></i> Delete</button>
 </form>
 
 {% endblock body %}
