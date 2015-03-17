@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>New document</h1>
+
+<form action="" method="POST">
+    <div class="form-group">
+        <label for="slug">Document slug (filename)</label>
+        <input class="form-control" id="slug" name="slug" placeholder="Slug">
+    </div>
+
+    <button type="submit" name="act" value="create" class="btn btn-lg btn-default">Create</button>
+</form>
+{% endblock body %}

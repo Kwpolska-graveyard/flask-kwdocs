@@ -7,11 +7,17 @@ form { display: inline-block; }
 td, th { vertical-align: middle !important; }
 p { margin: 0; }
 </style>
-<div class="well">Bulk actions:
+<div class="well">Actions:
     <form action="/docs/__bulk__/act/" method="POST">
         <button class="btn btn-success" title="Reload all" type="submit"
             name="act" value="reload">
             <i class="fa fa-refresh"></i> Reload data from all files
+        </button>
+    </form>
+    <form action="/docs/__new__/" method="POST">
+        <button class="btn btn-default" title="New document" type="submit"
+            name="act" value="form">
+            <i class="fa fa-file-text-o"></i> New document
         </button>
     </form>
 </div>

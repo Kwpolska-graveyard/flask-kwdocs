@@ -139,7 +139,7 @@ def doclist():
 def doc(slug):
     """Show one document."""
     doc = Document.query.filter_by(slug=slug).first()
-    return render_template('doc.html', doc=doc, title='Document {0}'.format(doc.title), permalink=url_for('.doc'))
+    return render_template('doc.html', doc=doc, title='Document {0}'.format(doc.title), permalink=url_for('.doc', slug=slug))
 
 
 @KwDocs.route("/<slug>/reload/")
@@ -161,7 +161,6 @@ def reload(slug):
         doc = Document(slug, d['title'], d['author'], d['date'])
     db.session.add(doc)
     db.session.commit()
-    print(slug, 'OK')
     return redirect(url_for('.doc', slug=slug))
 
 
@@ -268,7 +267,7 @@ def render(slug):
                                     app.config['DOCPATH'], slug),
             job_id='{0}.r2'.format(slug), depends_on=r1_job)
 
-    return render_template('render.html', slug=slug, title='Rendering {0}'.format(slug), permalink=url_for('.render'))
+    return render_template('render.html', slug=slug, title='Rendering {0}'.format(slug), permalink=url_for('.render', slug=slug))
 
 
 @KwDocs.route("/<slug>/delete/", methods=['GET', 'POST'])
@@ -302,7 +301,7 @@ def delete(slug):
         else:
             return redirect(url_for('.doc', slug=slug), 302)
     else:
-        return render_template('delete.html', slug=slug, title='Deleting {0}'.format(slug), permalink=url_for('.delete'))
+        return render_template('delete.html', slug=slug, title='Deleting {0}'.format(slug), permalink=url_for('.delete', slug=slug))
 
 
 @KwDocs.route("/<slug>/act/", methods=['POST'])
@@ -338,3 +337,24 @@ def act(slug):
             return redirect(url_for('.doclist'))
         else:
             return 'ERROR: invalid action {0}'.format(act)
+
+
+@KwDocs.route("/__new__/", methods=['GET', 'POST'])
+@login_required
+def new_doc():
+    """Creating a new document."""
+    if request.method == 'GET' or request.form.get('act') != 'create':
+        return render_template('new.html', title='New document', permalink=url_for('.new_doc'))
+    else:
+        slug = request.form['slug'].strip()
+        src = os.path.join(app.config['DOCPATH'], 'template', 'template.tex')
+        dstdir = os.path.join(app.config['DOCPATH'], slug)
+        dst = os.path.join(dstdir, slug + '.tex')
+        try:
+            os.mkdir(dstdir)
+            shutil.copy(src, dst)
+        except:
+            flash('Failed to create new document.', 'error')
+            return redirect(url_for('.new_doc'), 302)
+        reload(slug)
+        return redirect(url_for('.doc', slug=slug), 302)
