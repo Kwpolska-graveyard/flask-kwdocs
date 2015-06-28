@@ -22,16 +22,18 @@ p { margin: 0; }
     </form>
 </div>
 <table class="table table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Status</th>
+            <th>Name</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
     <tbody>
-    <tr>
-        <th>#</th>
-        <th>Status</th>
-        <th>Name</th>
-        <th>Title</th>
-        <th>Author</th>
-        <th>Date</th>
-        <th>Actions</th>
-    </tr>
     {% for d in docs %}
     <tr>
         <td style="vertical-align: middle; width: 3em;">{{ loop.index }}</td>
